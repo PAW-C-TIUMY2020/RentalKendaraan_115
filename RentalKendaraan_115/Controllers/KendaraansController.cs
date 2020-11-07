@@ -47,7 +47,7 @@ namespace RentalKendaraan_115.Controllers
         // GET: Kendaraans/Create
         public IActionResult Create()
         {
-            ViewData["IdJenisKendaraan"] = new SelectList(_context.JenisKendaraan, "IdJenisKendaraan", "IdJenisKendaraan");
+            ViewData["IdJenisKendaraan"] = new SelectList(_context.JenisKendaraan, "IdJenisKendaraan", "NamaJenisKendaraan");
             return View();
         }
 

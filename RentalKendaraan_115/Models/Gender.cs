@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace RentalKendaraan_115.Models
 {
@@ -11,6 +12,10 @@ namespace RentalKendaraan_115.Models
         }
 
         public int IdGender { get; set; }
+
+
+        [RegularExpression("^[L/P]*$", ErrorMessage = "Gender Hanya Boleh Diisi dengan L/P")]
+        [Required(ErrorMessage = "Gender Wajib Diisi!")]
         public string NamaGender { get; set; }
 
         public ICollection<Customer> Customer { get; set; }
