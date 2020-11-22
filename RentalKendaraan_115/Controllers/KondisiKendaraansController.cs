@@ -19,11 +19,52 @@ namespace RentalKendaraan_115.Controllers
         }
 
         // GET: KondisiKendaraans
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string ktsd, string searchString, string sortOrder, string currentFilter, int? pageNumber)
         {
-            return View(await _context.KondisiKendaraan.ToListAsync());
-        }
 
+
+            //buat list menyimpan ketersediaan
+            var ktsdList = new List<string>();
+            //query mengambil data
+            var ktsdQuery = from d in _context.KondisiKendaraan orderby d.NamaKondisi select d.NamaKondisi;
+
+            ktsdList.AddRange(ktsdQuery.Distinct());
+            //untukmenanmpiklkan data diview
+            ViewBag.ktsd = new SelectList(ktsdList);
+
+            //panggil db content
+            var menu = from m in _context.KondisiKendaraan.Include(k => k.IdKondisi) select m;
+
+            //untuk memilih dropdownlist ketersediaan
+            if (!string.IsNullOrEmpty(ktsd))
+            {
+                menu = menu.Where(x => x.NamaKondisi == ktsd);
+            }
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                menu = menu.Where(s => s.NamaKondisi.Contains(searchString));
+
+            }
+            //var rent_KendaraanContext = _context.Kendaraan.Include(k => k.IdJenisKendaraanNavigation);
+            //membuat pageLIist
+            ViewData["CurrentSort"] = sortOrder;
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+            //definisi jumlah data pada halaman
+            int pageSize = 5;
+
+            return View(await PaginatedList<KondisiKendaraan>.CreateAsync(menu.AsNoTracking(), pageNumber ?? 1, pageSize));
+
+        }
         // GET: KondisiKendaraans/Details/5
         public async Task<IActionResult> Details(int? id)
         {
