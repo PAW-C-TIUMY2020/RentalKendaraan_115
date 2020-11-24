@@ -25,15 +25,16 @@ namespace RentalKendaraan_115.Controllers
 
             //buat list menyimpan ketersediaan
             var ktsdList = new List<string>();
-            //query mengambil data
+            //Query mengambil data
             var ktsdQuery = from d in _context.KondisiKendaraan orderby d.NamaKondisi select d.NamaKondisi;
 
             ktsdList.AddRange(ktsdQuery.Distinct());
-            //untukmenanmpiklkan data diview
+
+            //untuk menampilkan di view
             ViewBag.ktsd = new SelectList(ktsdList);
 
-            //panggil db content
-            var menu = from m in _context.KondisiKendaraan.Include(k => k.IdKondisi) select m;
+            //panggil db context
+            var menu = from m in _context.KondisiKendaraan select m;
 
             //untuk memilih dropdownlist ketersediaan
             if (!string.IsNullOrEmpty(ktsd))
@@ -41,13 +42,26 @@ namespace RentalKendaraan_115.Controllers
                 menu = menu.Where(x => x.NamaKondisi == ktsd);
             }
 
+            //untuk search data
             if (!string.IsNullOrEmpty(searchString))
             {
                 menu = menu.Where(s => s.NamaKondisi.Contains(searchString));
-
             }
-            //var rent_KendaraanContext = _context.Kendaraan.Include(k => k.IdJenisKendaraanNavigation);
-            //membuat pageLIist
+
+            //untuk sorting
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    menu = menu.OrderByDescending(s => s.NamaKondisi);
+                    break;
+                default:
+                    menu = menu.OrderBy(s => s.NamaKondisi);
+                    break;
+            }
+
+            //membuat pagedList
             ViewData["CurrentSort"] = sortOrder;
             if (searchString != null)
             {
@@ -59,10 +73,12 @@ namespace RentalKendaraan_115.Controllers
             }
 
             ViewData["CurrentFilter"] = searchString;
+
             //definisi jumlah data pada halaman
             int pageSize = 5;
 
             return View(await PaginatedList<KondisiKendaraan>.CreateAsync(menu.AsNoTracking(), pageNumber ?? 1, pageSize));
+            //return View(await _context.KondisiKendaraan.ToListAsync());
 
         }
         // GET: KondisiKendaraans/Details/5

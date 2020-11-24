@@ -7,23 +7,26 @@
 <h2>Jaminan</h2>
 
 <p>
-    <a asp-action="Create">Tambah Data</a>
+    <a asp-action="Create">Tambah </a>
+    <a asp-action="Create">Tambah Data Baru</a>
 </p>
 
-@using (Html.BeginForm("Index", "Jaminan", FormMethod.Get))
+@using (Html.BeginForm("Index", "Jaminans", FormMethod.Get))
 {
     <p>
-        Jaminan : @Html.DropDownList("ktsd", "Pilih Jaminan")
-        Cari Data: @Html.TextBox("searchString")
+        Ketersediaan: @Html.DropDownList("ktsd", "Pilih jaminan")
+        Cari Data : @Html.TextBox("searchString")
         <input type="submit" value="Filter" />
     </p>
 }
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">
-                    Nama Jaminan
+                @*Html.DisplayNameFor(model => model.NamaJaminan)*@
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">
+                    Jaminan
                 </a>
             </th>
             <th></th>
@@ -48,7 +51,7 @@
 
 @{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "enabled" : "";
 }
 
 <a asp-action="Index"
@@ -66,4 +69,3 @@
    class="btn btn-default @nextDisabled">
     Next
 </a>
-

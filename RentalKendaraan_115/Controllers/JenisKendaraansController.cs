@@ -25,15 +25,16 @@ namespace RentalKendaraan_115.Controllers
 
             //buat list menyimpan ketersediaan
             var ktsdList = new List<string>();
-            //query mengambil data
+            //Query mengambil data
             var ktsdQuery = from d in _context.JenisKendaraan orderby d.NamaJenisKendaraan select d.NamaJenisKendaraan;
 
             ktsdList.AddRange(ktsdQuery.Distinct());
-            //untukmenanmpiklkan data diview
+
+            //untuk menampilkan di view
             ViewBag.ktsd = new SelectList(ktsdList);
 
-            //panggil db content
-            var menu = from m in _context.JenisKendaraan.Include(k => k.IdJenisKendaraan) select m;
+            //panggil db context
+            var menu = from m in _context.JenisKendaraan select m;
 
             //untuk memilih dropdownlist ketersediaan
             if (!string.IsNullOrEmpty(ktsd))
@@ -41,13 +42,27 @@ namespace RentalKendaraan_115.Controllers
                 menu = menu.Where(x => x.NamaJenisKendaraan == ktsd);
             }
 
+            //untuk search data
             if (!string.IsNullOrEmpty(searchString))
             {
-                menu = menu.Where(s => s.NamaJenisKendaraan.Contains(searchString) );
-
+                menu = menu.Where(s => s.NamaJenisKendaraan.Contains(searchString));
             }
-            //var rent_KendaraanContext = _context.Kendaraan.Include(k => k.IdJenisKendaraanNavigation);
-            //membuat pageLIist
+
+            //untuk sorting
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    menu = menu.OrderByDescending(s => s.NamaJenisKendaraan);
+                    break;
+                default:
+                    menu = menu.OrderBy(s => s.NamaJenisKendaraan);
+                    break;
+            }
+
+            //membuat pagedList
             ViewData["CurrentSort"] = sortOrder;
             if (searchString != null)
             {
@@ -59,10 +74,12 @@ namespace RentalKendaraan_115.Controllers
             }
 
             ViewData["CurrentFilter"] = searchString;
+
             //definisi jumlah data pada halaman
             int pageSize = 5;
 
             return View(await PaginatedList<JenisKendaraan>.CreateAsync(menu.AsNoTracking(), pageNumber ?? 1, pageSize));
+            //return View(await _context.JenisKendaraan.ToListAsync());
 
         }
         // GET: JenisKendaraans/Details/5

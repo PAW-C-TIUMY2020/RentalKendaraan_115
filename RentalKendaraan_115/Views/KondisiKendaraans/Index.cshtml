@@ -9,21 +9,22 @@
 <p>
     <a asp-action="Create">Tambah Data</a>
 </p>
-@using (Html.BeginForm("Index", "KondisiKendaraan", FormMethod.Get))
+@using (Html.BeginForm("Index", "KondisiKendaraans", FormMethod.Get))
 {
     <p>
-        Kondisi : @Html.DropDownList("ktsd", "Pilih Kondisi")
-
-        Cari Data: @Html.TextBox("searchString")
+        Ketersediaan: @Html.DropDownList("ktsd", "Pilih kondisi")
+        Cari Data : @Html.TextBox("searchString")
         <input type="submit" value="Filter" />
     </p>
 }
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">
-                    Kondisi Kendaraan
+                @*Html.DisplayNameFor(model => model.NamaKondisi)*@
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">
+                    Kondisi
                 </a>
             </th>
             <th></th>
@@ -48,7 +49,7 @@
 
 @{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "enabled" : "";
 }
 
 <a asp-action="Index"

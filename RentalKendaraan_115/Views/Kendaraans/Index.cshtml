@@ -4,23 +4,21 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Data Kendaraan</h2>
+<h2>Kendaraan</h2>
 
 <p>
-    <a asp-action="Create">Tambah Data Kendaraan</a>
+    <a asp-action="Create">Tambah Data Baru</a>
 </p>
 
-
-
-
-@using (Html.BeginForm("Index", "Kendaraan", FormMethod.Get))
+@using (Html.BeginForm("Index", "Kendaraans", FormMethod.Get))
 {
     <p>
-        ketersediaan : @Html.DropDownList("ktsd", "Pilih Ketersediaan")
-        Cari Data: @Html.TextBox("searchString")
+        Ketersediaan: @Html.DropDownList("ktsd", "Pilih jenis kendaraan")
+        Cari Data : @Html.TextBox("searchString")
         <input type="submit" value="Filter" />
     </p>
 }
+
 <table class="table">
     <thead>
         <tr>
@@ -30,7 +28,7 @@
                 </a>
             </th>
             <th>
-               No Polisi
+                No Polisi
             </th>
             <th>
                 No STNK
@@ -75,7 +73,7 @@
 
 @{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "enabled" : "";
 }
 
 <a asp-action="Index"
@@ -93,4 +91,3 @@
    class="btn btn-default @nextDisabled">
     Next
 </a>
-
